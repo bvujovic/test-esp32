@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
-const int pin = 2;
-// const int pin = 8; // super mini ESP32
+const int pin = 2; // 8 - ESP32-C3 SuperMini, 1 - ESP32 Dev
 
 void setup()
 {
@@ -10,7 +9,7 @@ void setup()
   // digitalWrite(pin, false);
   // while (true)
   //   delay(100);
-  Serial.println(ESP.getFreeHeap() / 1024);
+  // Serial.println(ESP.getFreeHeap() / 1024);
 }
 
 void loop()
