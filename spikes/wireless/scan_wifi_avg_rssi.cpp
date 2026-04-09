@@ -1,7 +1,6 @@
 //* Scan WiFi networks multiple times and calculate average RSSI for each network.
 //* Compare different boards and antennas by observing average RSSI values.
-//TODO Test ESP32-C3 SuperMini board(s) with this antena modification:
-// https://peterneufeld.wordpress.com/2025/03/04/esp32-c3-supermini-antenna-modification/
+// antena modification: https://peterneufeld.wordpress.com/2025/03/04/esp32-c3-supermini-antenna-modification/
 
 #include "WiFi.h"
 
@@ -41,6 +40,7 @@ void setup()
     Serial.begin(115200);
     Serial.println("Setup...");
     WiFi.mode(WIFI_STA);
+    WiFi.setTxPower(WIFI_POWER_13dBm);
     WiFi.disconnect();
     delay(2000);
 }
@@ -206,4 +206,49 @@ CGA2121_YyZubnp_5g  (-83.9, found 10 times)
 CGA2121_YyZubnp     (-83.9, found 10 times)
 SUZANA              (-84.4, found 10 times)
 823144              (-85.0, found 10 times)
+
+ESP32-C3-Zero (blue), smaller red ceramic antenna
+SSID                 (AvgRSSI, found times)
+Vujovic             (-59.8, found 10 times)
+SUZANA              (-83.4, found 10 times)
+Borojevic           (-67.8, found  9 times)
+823144              (-84.0, found  9 times)
+Sandra              (-92.9, found  8 times)
+GOLF 3A             (-89.4, found  7 times)
+TS-3jee             (-89.9, found  7 times)
+Vidaic              (-94.3, found  3 times)
+
+ESP32-C3-Zero (blue), smaller red ceramic antenna with improvement
+SSID                 (AvgRSSI, found times)
+Vujovic             (-49.6, found 10 times)
+Borojevic           (-68.7, found 10 times)
+SUZANA              (-82.7, found 10 times)
+823144              (-89.6, found 10 times)
+GOLF 3A             (-94.7, found 10 times)
+TS-3jee             (-94.0, found  9 times)
+Sandra              (-94.8, found  9 times)
+ZTE_H168NEB942C     (-94.7, found  6 times)
+
+ESP32-S3 Super Mini (black), smaller red ceramic antenna
+SSID                 (AvgRSSI, found times)
+Vujovic             (-65.1, found 10 times)
+Borojevic           (-73.4, found 10 times)
+SUZANA              (-91.8, found 10 times)
+823144              (-92.2, found  8 times)
+GOLF 3A             (-95.0, found  7 times)
+ZTE_H168NEB942C     (-93.0, found  1 times)
+TS-3jee             (-94.0, found  1 times)
+
+ESP32-S3 Super Mini (black), smaller red ceramic antenna with improvement
+SSID                 (AvgRSSI, found times)
+Vujovic             (-56.9, found 10 times)
+Borojevic           (-66.2, found 10 times)
+SUZANA              (-78.8, found 10 times)
+823144              (-86.7, found 10 times)
+GOLF 3A             (-91.1, found 10 times)
+TS-3jee             (-92.8, found 10 times)
+ZTE_H168NEB942C     (-94.7, found  9 times)
+Sandra              (-92.0, found  6 times)
+
+
 */
