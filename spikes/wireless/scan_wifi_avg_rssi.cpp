@@ -207,6 +207,16 @@ CGA2121_YyZubnp     (-83.9, found 10 times)
 SUZANA              (-84.4, found 10 times)
 823144              (-85.0, found 10 times)
 
+ESP32-C3 Super Mini w/ screen (black), smaller red ceramic antenna
+SSID                 (AvgRSSI, found times)
+Vujovic             (-67.4, found 10 times)
+Borojevic           (-68.1, found 10 times)
+SUZANA              (-87.3, found 10 times)
+823144              (-93.1, found  7 times)
+TS-3jee             (-93.7, found  7 times)
+ZTE_H168NEB942C     (-92.8, found  6 times)
+GOLF 3A             (-95.2, found  4 times)
+
 ESP32-C3-Zero (blue), smaller red ceramic antenna
 SSID                 (AvgRSSI, found times)
 Vujovic             (-59.8, found 10 times)
@@ -250,5 +260,15 @@ TS-3jee             (-92.8, found 10 times)
 ZTE_H168NEB942C     (-94.7, found  9 times)
 Sandra              (-92.0, found  6 times)
 
+Seeed Studio XIAO ESP32C3, with its own antenna
+SSID                 (AvgRSSI, found times)
+Vujovic             (-40.9, found 10 times)
+Borojevic           (-43.3, found 10 times)
+SUZANA              (-58.2, found 10 times)
+823144              (-69.8, found 10 times)
+TS-3jee             (-73.0, found 10 times)
+GOLF 3A             (-78.8, found 10 times)
+ZTE_245FF4          (-84.2, found 10 times)
+ZTE_H168NEB942C     (-70.8, found  9 times)
 
 */

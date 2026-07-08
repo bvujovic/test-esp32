@@ -4,8 +4,8 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <U8g2lib.h>           // olikraus/U8g2@^2.36.12
-#include <Adafruit_MLX90614.h> // adafruit/Adafruit MLX90614 Library @ ^2.1.5
+#include <U8g2lib.h>           // lib_deps = olikraus/U8g2@^2.36.12
+#include <Adafruit_MLX90614.h> // lib_deps = adafruit/Adafruit MLX90614 Library @ ^2.1.5
 
 U8G2_SSD1306_72X40_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE, 6, 5); // rotation, reset, clock, data
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();

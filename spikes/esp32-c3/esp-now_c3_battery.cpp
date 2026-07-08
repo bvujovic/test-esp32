@@ -1,4 +1,4 @@
-//* Tested on ESP32-C3 SuperMini (black) /w and /wo additional wire antenna when Li-Ion battery is connected
+//* Tested on ESP32-C3 SuperMini (black) /w and w/o additional wire antenna when Li-Ion battery is connected
 //* directly to 5V and GND pins. It works well with electrolytic capacitor but not without.
 //* It didn't work with 18650 battery at 3.5V, but at 3.9V it did.
 //* Important setting: WiFi.setTxPower(WIFI_POWER_13dBm)

@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-const int pin = 2; // 8 - C3 SuperMini, 1 - Dev, 22 - w/ battery connector
+const int pin = 8; // 8 - C3 SuperMini, 2 - Dev, 22 - w/ battery connector
 
 void setup()
 {

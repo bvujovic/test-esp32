@@ -1,5 +1,5 @@
 #include <Wire.h>
-#include <Adafruit_MLX90614.h>
+#include <Adafruit_MLX90614.h> // lib_deps = adafruit/Adafruit MLX90614 Library @ ^2.1.5
 
 // For ESP32-C3, define I2C pins if not using defaults
 #define SDA_PIN 4

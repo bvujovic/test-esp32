@@ -1,15 +1,19 @@
 // 1: blue board with yellow pin headers and antenna connector
 // 2: black board with short red antenna
 // 3: ESP32-C3-Zero (blue), smaller red ceramic antenna with improvement
+// 4: XIAO ESP32-C3
 //
 // Board    Normal      Deep Sleep (with power LED on)
 // 1        19.2mA      2.8mA
 // 1        17mA        0.08mA      measured by SMA19 multimeter, Li-Ion battery at 4.1V
 // 2        17.8mA      0.88mA
+// 2        17.8mA      90uA        measured by SMA19 multimeter, HT7333
 // 2        17mA        88uA        measured by SMA19 multimeter, Li-Ion battery at 4.1V, w/ 1000uF capacitor across 5V and GND, PWR LED desoldered
-// 2        18mA        0.47mA      measured by SMA19 multimeter, Li-Ion battery at 4.1V, /w PWR LED
+// 2        18mA        0.47mA      measured by SMA19 multimeter, Li-Ion battery at 4.1V, w/ PWR LED
 // 3        18.2mA      0.50mA
 // 3        17.9mA      590uA       measured by SMA19 multimeter, Li-Ion battery at 4.1V, w/ 1000uF capacitor across 5V and GND, PWR LED desoldered
+// 4        18mA        340uA       gets power from USB
+// 4        17.9mA      40uA        gets power from B+ & B-
 
 #include <Arduino.h>
 
@@ -25,6 +29,7 @@ void setup()
     // digitalWrite(pinLedBuiltin, LOW); // Turn off the LED after setup
     // delay(3000); // Short delay to ensure the LED state is set before sleeping
 
+    delay(3000);
     esp_sleep_enable_timer_wakeup(5 * 1000 * 1000);
     esp_deep_sleep_start();
 }
