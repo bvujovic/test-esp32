@@ -10,49 +10,50 @@
 U8G2_SSD1306_72X40_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE, 6, 5); // rotation, reset, clock, data
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 
+const ulong itvSampling = 2000; // sampling interval in milliseconds
 char str[6];
 int dy;
 
 // Function to display the object and ambient temperatures on the OLED screen
 void displayNums(int a, int b)
 {
-    a %= 100;
-    b %= 100;
-    sprintf(str, "%d|%d", a, b);
-    auto dx = (disp.getDisplayWidth() - disp.getStrWidth(str)) / 2;
-    disp.clearBuffer();
-    disp.drawStr(dx, dy, str);
-    disp.sendBuffer();
+  a %= 100;
+  b %= 100;
+  sprintf(str, "%d|%d", a, b);
+  auto dx = (disp.getDisplayWidth() - disp.getStrWidth(str)) / 2;
+  disp.clearBuffer();
+  disp.drawStr(dx, dy, str);
+  disp.sendBuffer();
 }
 
 void setup()
 {
-    Serial.begin(115200);
-    delay(1000);
-    disp.setBusClock(100000);
-    if (!disp.begin())
-    {
-        Serial.println("Failed to initialize OLED");
-        while (true)
-            delay(1000);
-    }
-    if (!mlx.begin())
-    {
-        Serial.println("Failed to initialize MLX90614");
-        while (true)
-            delay(1000);
-    }
-    //? mlx.emmissivity(0.95); // set emissivity to 0.95 for better accuracy with human skin
-    disp.clearBuffer();
-    disp.setFont(u8g2_font_logisoso24_tf);
-    dy = disp.getDisplayHeight() - (disp.getDisplayHeight() - disp.getMaxCharHeight()) / 2; // use max char height for better centering
+  Serial.begin(115200);
+  delay(500);
+  disp.setBusClock(100000);
+  if (!disp.begin())
+  {
+    Serial.println("Failed to initialize OLED");
+    while (true)
+      delay(1000);
+  }
+  if (!mlx.begin())
+  {
+    Serial.println("Failed to initialize MLX90614");
+    while (true)
+      delay(1000);
+  }
+  //? mlx.emmissivity(0.95); // set emissivity to 0.95 for better accuracy with human skin
+  disp.clearBuffer();
+  disp.setFont(u8g2_font_logisoso24_tf);
+  dy = disp.getDisplayHeight() - (disp.getDisplayHeight() - disp.getMaxCharHeight()) / 2; // use max char height for better centering
 }
 
 void loop()
 {
-    auto tempObject = mlx.readObjectTempC();
-    auto tempAmbient = mlx.readAmbientTempC();
-    displayNums((int)(tempObject + 0.5), (int)(tempAmbient + 0.5));
+  auto tempObject = mlx.readObjectTempC();
+  auto tempAmbient = mlx.readAmbientTempC();
+  displayNums((int)(tempObject + 0.5), (int)(tempAmbient + 0.5));
 
-    delay(2000);
+  delay(itvSampling);
 }

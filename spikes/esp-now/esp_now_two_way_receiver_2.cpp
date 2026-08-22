@@ -38,10 +38,10 @@ void setup()
 
   // 2. FORCE the "Home" channel to 4
   // We do this by disconnecting and setting the channel via esp_wifi
-  // WiFi.disconnect();
-  // esp_wifi_set_promiscuous(true);
-  // esp_wifi_set_channel(4, WIFI_SECOND_CHAN_NONE);
-  // esp_wifi_set_promiscuous(false);
+  WiFi.disconnect();
+  esp_wifi_set_promiscuous(true);
+  esp_wifi_set_channel(4, WIFI_SECOND_CHAN_NONE);
+  esp_wifi_set_promiscuous(false);
 
   if (esp_now_init() != ESP_OK)
   {
@@ -62,7 +62,7 @@ void setup()
 }
 
 // char msg[] = "ESP32-Now 2way";
-char msg[10] = "6666";
+char msg[10] = "7777";
 ulong msLastSent = 0;
 
 void loop()
