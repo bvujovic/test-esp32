@@ -1,9 +1,12 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+int cntNoDevices = 0;
+
 void setup()
 {
   Wire.begin();
+  // Wire.begin(8, 9); // Set SDA to pin 8 and SCL to pin 9
   Serial.begin(115200);
   for (size_t i = 0; i < 5; i++)
     Serial.print(".");
@@ -26,6 +29,6 @@ void loop()
     }
   }
   if (devices == 0)
-    Serial.println("No I2C devices found\n");
+    Serial.printf("No I2C devices found (%d)\n", cntNoDevices++);
   delay(5000);
 }

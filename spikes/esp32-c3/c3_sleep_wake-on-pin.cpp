@@ -17,58 +17,64 @@
 #include "esp_sleep.h"
 // #include "driver/gpio.h" //?
 
-#define WAKEUP_GPIO GPIO_NUM_4 // or GPIO_NUM_3
+#define WAKEUP_GPIO GPIO_NUM_3 // GPIO_NUM_3 or GPIO_NUM_4
 const byte pinLed = 8;         // GPIO8 is connected to the onboard LED on ESP32-C3-DevKitM-1
 
 void ledOn(bool on)
 {
-    digitalWrite(pinLed, on ? LOW : HIGH);
+  digitalWrite(pinLed, on ? LOW : HIGH);
 }
 void blinkLed(int times, int delayMs)
 {
-    for (int i = 0; i < times; i++)
-    {
-        ledOn(true);
-        delay(delayMs);
-        ledOn(false);
-        delay(delayMs);
-    }
+  for (int i = 0; i < times; i++)
+  {
+    ledOn(true);
+    delay(delayMs);
+    ledOn(false);
+    delay(delayMs);
+  }
 }
 
 void setup()
 {
-    Serial.begin(115200);
-    delay(1000);
-    pinMode(pinLed, OUTPUT);
-    Serial.println("Booting...");
-    // Print wakeup reason
-    esp_sleep_wakeup_cause_t cause = esp_sleep_get_wakeup_cause();
-    printf("Wakeup cause: %d\n", cause);
-    if (cause == ESP_SLEEP_WAKEUP_GPIO)
-    {
-        Serial.println("Woke up from GPIO!");
-        blinkLed(3, 200);
-        // cooldown period to avoid multiple triggers
-        esp_sleep_enable_timer_wakeup(1 * 60 * 1000000ULL);
-        esp_deep_sleep_start();
-    }
-    else
-    {
-        Serial.println("Normal startup");
-        blinkLed(1, 500);
-    }
-
-    // uint64_t mask = esp_sleep_get_gpio_wakeup_status();
-    // Serial.printf("Wakeup GPIO mask: 0x%llX\n", mask);  // Wakeup GPIO mask: 0x10 for GPIO4
-
-    delay(2000);
-
-    pinMode((int)WAKEUP_GPIO, INPUT_PULLUP);                                       // Configure pin
-    gpio_wakeup_enable(WAKEUP_GPIO, GPIO_INTR_LOW_LEVEL);                          // Enable GPIO wakeup (LOW level trigger in this example)
-    esp_deep_sleep_enable_gpio_wakeup(1 << WAKEUP_GPIO, ESP_GPIO_WAKEUP_GPIO_LOW); // Enable wakeup source
-    Serial.println("Going to sleep...");
-    delay(100);
+  Serial.begin(115200);
+  delay(1000);
+  pinMode(pinLed, OUTPUT);
+  Serial.println("Booting...");
+  // Print wakeup reason
+  esp_sleep_wakeup_cause_t cause = esp_sleep_get_wakeup_cause();
+  printf("Wakeup cause: %d\n", cause);
+  if (cause == ESP_SLEEP_WAKEUP_GPIO)
+  {
+    Serial.println("Woke up from GPIO!");
+    blinkLed(3, 200);
+    // cooldown period to avoid multiple triggers
+    esp_sleep_enable_timer_wakeup(1 * 60 * 1000000ULL);
     esp_deep_sleep_start();
+  }
+  else
+  {
+    Serial.println("Normal startup");
+    blinkLed(1, 500);
+  }
+
+  // uint64_t mask = esp_sleep_get_gpio_wakeup_status();
+  // Serial.printf("Wakeup GPIO mask: 0x%llX\n", mask);  // Wakeup GPIO mask: 0x10 for GPIO4
+
+  delay(1000);
+
+  while (digitalRead(WAKEUP_GPIO) == LOW)
+    delay(50);
+  pinMode(WAKEUP_GPIO, INPUT);
+  // pinMode((int)WAKEUP_GPIO, INPUT_PULLUP);                                       // Configure pin
+  gpio_wakeup_enable(WAKEUP_GPIO, GPIO_INTR_LOW_LEVEL);                          // Enable GPIO wakeup (LOW level trigger in this example)
+  esp_deep_sleep_enable_gpio_wakeup(1 << WAKEUP_GPIO, ESP_GPIO_WAKEUP_GPIO_LOW); // Enable wakeup source
+  // pinMode((int)WAKEUP_GPIO, INPUT_PULLDOWN);
+  // gpio_wakeup_enable(WAKEUP_GPIO, GPIO_INTR_HIGH_LEVEL);
+  // esp_deep_sleep_enable_gpio_wakeup(1 << WAKEUP_GPIO, ESP_GPIO_WAKEUP_GPIO_HIGH);
+  Serial.println("Going to sleep...");
+  delay(100);
+  esp_deep_sleep_start();
 }
 
 void loop() {}
