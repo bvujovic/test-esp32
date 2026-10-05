@@ -11,8 +11,8 @@ void setup()
   Serial.println("Initializing SCD41 sensor...");
 
   // Wire.begin(); // Adjust SDA/SCL pins here if needed (e.g., Wire.begin(21, 22))
-  Wire.begin(8, 9); 
-  Wire.setClock(100000);
+  Wire.begin(8, 9);
+  // Wire.setClock(100000);
   // scd.begin(Wire);
   scd.begin(Wire, 0x62); // Use the default I2C address for SCD41 (0x62)
 
@@ -28,7 +28,7 @@ void setup()
   else
   {
     Serial.println("SCD41 initialized successfully.");
-  
+
     float tempOffset;
     scd.getTemperatureOffset(tempOffset);
     printf("Temperature offset: %.2f °C\n", tempOffset);
@@ -41,9 +41,23 @@ void setup()
 void loop()
 {
   bool isDataReady = false;
-  auto error = scd.getDataReadyStatus(isDataReady);
-  if (error)
-    Serial.printf("Error checking data ready status from SCD41!, Error code: %d\n", error);
+  auto msStartDataReady = millis();
+  while (true)
+  {
+    auto error = scd.getDataReadyStatus(isDataReady);
+    if (error)
+    {
+      Serial.printf("Error checking data ready status from SCD41!, Error code: %d\n", error);
+      break;
+    }
+    if (isDataReady)
+      break;
+    if (millis() - msStartDataReady > 3000)
+    {
+      Serial.println("Timeout waiting for data ready status from SCD41!");
+      break;
+    }
+  }
 
   if (isDataReady)
   {
