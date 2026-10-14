@@ -1,5 +1,6 @@
-// ESP32-C3 with an OLED display and two MQ gas sensors (MQ2 and MQ135).
-// OLED displays both values, btn click -> graph for MQ2, btn click -> graph for MQ135.
+//* ESP32-C3 with an OLED display and two MQ gas sensors (MQ2 and MQ135).
+//* OLED displays both values, btn click -> graph for MQ2, btn click -> graph for MQ135.
+//* Current consumption: 260mA
 
 #include <Arduino.h>
 
@@ -7,7 +8,8 @@ enum Modes
 {
   MODE_DISPLAY,
   MODE_GRAPH_MQ2,
-  MODE_GRAPH_MQ135
+  MODE_GRAPH_MQ135,
+  MODE_COUNT
 };
 Modes mode = MODE_DISPLAY;
 
@@ -17,16 +19,22 @@ const byte pinMQ2 = 4;
 const byte pinMQ135 = 2;
 const byte pinButton = 7;
 
+const ulong SECOND = 1000;
+const ulong itvDisplayData = 5; // refresh interval for displaying data in seconds
+const ulong itvSaveData = 30;   // refresh interval for saving data in seconds
+ulong msPrevDisplay = 0;
+ulong msPrevSave = 0;
+
 #include <U8g2lib.h> // lib_deps = olikraus/U8g2@^2.36.12
 U8G2_SSD1306_72X40_ER_F_HW_I2C disp(U8G2_R0, /* reset=*/U8X8_PIN_NONE, /* clock=*/6, /* data=*/5);
 char str[6];
 int dx, dy;
 
-void displayNums(int a, int b)
+void displayNums(int a, char separator, int b)
 {
   a %= 100;
   b %= 100;
-  sprintf(str, "%02d|%02d", a, b);
+  sprintf(str, "%02d%c%02d", a, separator, b);
   auto dx = (disp.getDisplayWidth() - disp.getStrWidth(str)) / 2;
   disp.clearBuffer();
   disp.drawStr(dx, dy, str);
@@ -41,16 +49,25 @@ void displayNums(int a, int b)
 CircularBuffer<uint16_t, SCREEN_WIDTH> mq2Values;
 CircularBuffer<uint16_t, SCREEN_WIDTH> mq135Values;
 #define MAX_MQ_RAW_VALUE 4095
+uint8_t percentMQ2 = 0, percentMQ135 = 0;
 
-void drawGraph(CircularBuffer<uint16_t, SCREEN_WIDTH> &values)
+void drawGraph(CircularBuffer<uint16_t, SCREEN_WIDTH> &values, bool displayRange)
 {
   disp.clearBuffer();
-  auto max = 0;
+  auto max = 0, min = 100;
   for (decltype(mq2Values)::index_t i = 0; i < values.size() - 1; i++)
   {
     auto value = values[i];
     if (value > max)
       max = value;
+    if (value < min)
+      min = value;
+  }
+  if (displayRange)
+  {
+    displayNums(min, '-', max);
+    delay(1000);
+    disp.clearBuffer();
   }
   for (size_t i = 0; i < values.size(); i++)
   {
@@ -61,11 +78,25 @@ void drawGraph(CircularBuffer<uint16_t, SCREEN_WIDTH> &values)
   disp.sendBuffer();
 }
 
+void refreshDisplay(bool displayGraphRange)
+{
+  switch (mode)
+  {
+  case MODE_DISPLAY:
+    displayNums(percentMQ2, '|', percentMQ135);
+    // delay(1000);
+    break;
+  case MODE_GRAPH_MQ2:
+    drawGraph(mq2Values, displayGraphRange);
+    break;
+  case MODE_GRAPH_MQ135:
+    drawGraph(mq135Values, displayGraphRange);
+    break;
+  }
+}
+
 #include <OneButton.h> // mathertel/OneButton @ ^2.6.2
 OneButton button(pinButton);
-
-ulong msPrev = 0;
-const ulong interval = 2000;
 
 void setup()
 {
@@ -78,8 +109,9 @@ void setup()
 
   button.attachClick([]()
                      {
-    // next mode
-    mode = static_cast<Modes>((static_cast<int>(mode) + 1) % 3); });
+    mode = static_cast<Modes>((static_cast<int>(mode) + 1) % MODE_COUNT);  // next mode
+    refreshDisplay(true);
+  ; });
 }
 
 int i = -1;
@@ -87,31 +119,28 @@ int i = -1;
 void loop()
 {
   button.tick();
-  delay(10);
+  delay(20);
   auto ms = millis();
-  if (ms - msPrev >= interval || msPrev == 0) // Check if 5 seconds have passed
+  if (ms - msPrevDisplay >= itvDisplayData * SECOND || msPrevDisplay == 0) // Check if the `itvDisplayData` seconds passed
   {
-    msPrev = ms;
+    // Serial.println("get data");
+    msPrevDisplay = ms;
     auto rawMQ2 = analogRead(pinMQ2);
     auto rawMQ135 = analogRead(pinMQ135);
-    auto percentMQ2 = map(rawMQ2, 0, MAX_MQ_RAW_VALUE, 0, 99);     // Map the raw value to a percentage
-    auto percentMQ135 = map(rawMQ135, 0, MAX_MQ_RAW_VALUE, 0, 99); // Map the raw value to a percentage
-    mq2Values.push(rawMQ2);
-    mq135Values.push(rawMQ135);
+    percentMQ2 = map(rawMQ2, 0, MAX_MQ_RAW_VALUE, 0, 99);     // Map the raw value to a percentage
+    percentMQ135 = map(rawMQ135, 0, MAX_MQ_RAW_VALUE, 0, 99); // Map the raw value to a percentage
 
-    switch (mode)
+    if (ms - msPrevSave >= itvSaveData * SECOND || msPrevSave == 0) // Check if the `itvSaveData` seconds passed
     {
-    case MODE_DISPLAY:
-      displayNums(percentMQ2, percentMQ135);
-      // delay(1000);
-      break;
-    case MODE_GRAPH_MQ2:
-      drawGraph(mq2Values);
-      break;
-    case MODE_GRAPH_MQ135:
-      drawGraph(mq135Values);
-      break;
+      // Serial.println("save data");
+      msPrevSave = ms;
+      // mq2Values.push(rawMQ2);
+      // mq135Values.push(rawMQ135);
+      mq2Values.push(percentMQ2);
+      mq135Values.push(percentMQ135);
     }
+
+    refreshDisplay(false);
   }
   /*
           // Convert the analog readings to voltage (Optional)
@@ -139,6 +168,3 @@ void loop()
           Serial.println();
           */
 }
-
-//   disp.clearDisplay();
-//   disp.setPowerSave(1);

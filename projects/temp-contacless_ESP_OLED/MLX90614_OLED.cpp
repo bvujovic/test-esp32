@@ -7,7 +7,10 @@
 #include <U8g2lib.h>           // lib_deps = olikraus/U8g2@^2.36.12
 #include <Adafruit_MLX90614.h> // lib_deps = adafruit/Adafruit MLX90614 Library @ ^2.1.5
 
-U8G2_SSD1306_72X40_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE, 6, 5); // rotation, reset, clock, data
+const byte pinSDA = 5; // SDA pin for I2C (apparently both OLED and MLX90614)
+const byte pinSCL = 6; // SCL pin for I2C (apparently both OLED and MLX90614)
+
+U8G2_SSD1306_72X40_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE, pinSCL, pinSDA); // rotation, reset, clock, data
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 
 const ulong itvSampling = 2000; // sampling interval in milliseconds

@@ -174,7 +174,7 @@ TS-p86C             (-80.7, found 10 times)
 Sandra              (-85.4, found 10 times)
 SUZANA              (-85.6, found 10 times)
 
-ESP32-C3 Super Mini (blue), larger ceramic antenna
+ESP32-C3 Pro Mini (blue), larger ceramic antenna
 SSID                 (AvgRSSI, found times)
 Vujovic             (-41.2, found 10 times)
 TS-p86C             (-58.7, found 10 times)
@@ -184,6 +184,17 @@ CGA2121_w2rZjDC     (-60.5, found 10 times)
 Borojevic           (-63.5, found 10 times)
 823144              (-71.6, found 10 times)
 CGA2121_YyZubnp     (-74.6, found 10 times)
+
+ESP32-C3 Pro Mini (dark blue), larger ceramic antenna (NiceMCU antenna)
+SSID                 (AvgRSSI, found times)
+Vujovic             (-54.2, found 10 times)
+Borojevic           (-55.3, found 10 times)
+SUZANA              (-66.9, found 10 times)
+823144              (-76.9, found 10 times)
+Sandra              (-81.8, found 10 times)
+Nikola’s iPhone     (-85.3, found 10 times)
+GOLF 3A             (-88.4, found 10 times)
+ZTE_H168NEB942C     (-80.4, found  9 times)
 
 ESP32-C3 Super Mini (black), smaller red ceramic antenna
 SSID                 (AvgRSSI, found times)
